@@ -2,11 +2,6 @@ import "reflect-metadata"
 import { DataSource, DataSourceOptions } from "../../src/index"
 import { Post } from "./entity/Post"
 import { PostDetails } from "./entity/PostDetails"
-import { PostCategory } from "./entity/PostCategory"
-import { PostMetadata } from "./entity/PostMetadata"
-import { PostImage } from "./entity/PostImage"
-import { PostInformation } from "./entity/PostInformation"
-import { PostAuthor } from "./entity/PostAuthor"
 
 const options: DataSourceOptions = {
     type: "mysql",
@@ -19,12 +14,7 @@ const options: DataSourceOptions = {
     synchronize: true,
     entities: [
         Post,
-        PostDetails,
-        PostCategory,
-        PostMetadata,
-        PostImage,
-        PostInformation,
-        PostAuthor,
+        PostDetails
     ],
 }
 
@@ -58,39 +48,7 @@ dataSource.initialize().then(
             .then((post) => {
                 console.log("Loaded post: ", post)
             })
-            .then((post) => {
-                return postRepository
-                    .createQueryBuilder("post")
-                    .select("post")
-                    .leftJoinAndSelect("post.details", "details")
-                    .where("post.id=:keyword")
-                    .setParameter("keyword", 1)
-                    .getMany()
-            })
-            .then((post) => {
-                console.log(post)
-            })
             .catch((error) => console.log("Cannot save. Error: ", error))
     },
     (error) => console.log("Cannot connect: ", error),
 )
-
-
-// dataSource.initialize().then(
-//     (dataSource) => {
-//
-//         let postRepository = dataSource.getRepository(Post)
-//
-//         postRepository
-//             .createQueryBuilder("post")
-//             .select("post")
-//             .leftJoinAndSelect("post.details", "details")
-//             .where("post.id=:keyword")
-//             .setParameter("keyword", 2)
-//             .getMany()
-//             .then((post) => {
-//                 console.log(post);
-//             })
-//     },
-//     (error) => console.log("Cannot connect: ", error),
-// )
